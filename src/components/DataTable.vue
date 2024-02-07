@@ -1,27 +1,61 @@
 <template>
   <v-container>
     <v-row>
-        <v-card>
+        <v-card width="100%">
             <v-card-title>
                 Data Table
             </v-card-title>
-            <v-card-subtitle><p>Uh oh. There is nothing there. Using the data at <a href="https://random-data-api.com/">https://random-data-api.com/</a>, populate the table
-      below with headers and make it searchable. Also, expand the table to full width of the container. Let Bob know when complete.</p></v-card-subtitle>
-    <v-data-table>
-
-    </v-data-table>
-    </v-card>
-    </v-row>
-    <v-row>
-      
+            <v-data-table
+              :headers="headers"
+              :items="items"
+              :search="search"
+              class="elevation-1"
+            >
+              <template v-slot:top>
+                <v-toolbar flat color="white">
+                  <v-spacer></v-spacer>
+                  <v-text-field
+                    v-model="search"
+                    append-icon="mdi-magnify"
+                    label="Search"
+                    single-line
+                    hide-details
+                  ></v-text-field>
+                </v-toolbar>
+              </template>
+            </v-data-table>
+        </v-card>
     </v-row>
   </v-container>
 </template>
 
 <script>
-export default {
+import axios from 'axios';
 
+export default {
+  name: 'DataTable',
   data: () => ({
+    search: '',
+    headers: [
+      { text: 'ID', value: 'id' },
+      { text: 'Name', value: 'name' },
+      { text: 'Brand', value: 'brand' },
+      { text: 'Style', value: 'style' },
+      { text: 'Ibu', value: 'ibu' },
+      { text: 'Alcohol', value: 'alcohol' },
+    ],
+    items: [],
   }),
+
+  created() {
+    this.fetchData();
+  },
+  methods: {
+    async fetchData() {
+      const response = await axios.get('https://random-data-api.com/api/v2/beers?size=100');
+      this.items = response.data;
+    },
+  },
+
 };
 </script>
